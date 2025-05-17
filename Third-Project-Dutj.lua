@@ -127,19 +127,19 @@ local function getClosestTarget()
 	local shortest = math.huge
 	for _, player in pairs(Players:GetPlayers()) do
 		if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
-			local pos, visible = Camera:WorldToViewportPoint(player.Character.Head.Position)
-			local viewportSize = Camera.ViewportSize
-			local dist = (Vector2.new(pos.X / 2, pos.Y / 2) - UserInputService:Camera.ViewportSize()).Magnitude
-			if visible and dist < circleRadius then
-				if dist < shortest then
-					closest = player
-					shortest = dist
-				end
+		   local pos, visible = Camera:WorldToViewportPoint(player.Character.Head.Position)
+		   if visible then
+			local screenPos = Vector2.new(pos.X, pos.Y)
+			local dist = (screenPos - center).Magnitude
+			if dist < circleRadius and dist < shortest then
+			    closest = player
+			    shortest = dist
 			end
+		    end
 		end
-	end
-	return closest
-end
+            end
+	    return closest
+        end
 
 -- Aimbot + Silent Aim
 RunService.RenderStepped:Connect(function()

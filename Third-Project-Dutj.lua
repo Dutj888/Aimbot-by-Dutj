@@ -128,7 +128,7 @@ local function getClosestTarget()
 	for _, player in pairs(Players:GetPlayers()) do
 		if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
 			local pos, visible = Camera:WorldToViewportPoint(player.Character.Head.Position)
-			local dist = (Vector2.new(pos.X, pos.Y) - UserInputService:GetMouseLocation()).Magnitude
+			local dist = (Vector2.new(pos.X / 2, pos.Y / 2) - UserInputService:Camera.ViewportSize()).Magnitude
 			if visible and dist < circleRadius then
 				if dist < shortest then
 					closest = player

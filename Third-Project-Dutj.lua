@@ -1,3 +1,4 @@
+-- If I find any cases of taking without credit, I will lock the script and any further updates to it will not be published to you.
 -- i make this script for everyone can use and take to use for everyone hub
 -- please make credit if you take my script (dutj) (tysm for use) 
 local Players = game:GetService("Players")

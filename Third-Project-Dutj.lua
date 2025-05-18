@@ -1,4 +1,5 @@
--- please make credit if you take my script (dutj)
+-- i make this script for everyone can use and take to use for everyone hub
+-- please make credit if you take my script (dutj) (tysm for use) 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")

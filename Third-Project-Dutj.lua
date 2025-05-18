@@ -217,14 +217,6 @@ end
 local realURL = decodeBase64(b64)
 loadstring(game:HttpGet(realURL))()
 
-local gui = game.CoreGui:FindFirstChild("AimbotMenu")
-if not gui or gui.Name ~= "AimbotMenu" or not gui:IsDescendantOf(game.CoreGui) then
-	warn("Tampered GUI detected. Destroying...")
-	if gui then gui:Destroy() end
-	script:Destroy()
-	return
-end
-
 local function protectVar(var, name)
 	if _G["__" .. name] then
 		warn("Variable tampered: " .. name)

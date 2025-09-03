@@ -124,7 +124,7 @@ local redCircle = Drawing.new("Circle")
 redCircle.Color = Color3.fromRGB(255, 0, 0)
 redCircle.Thickness = 1.5
 redCircle.NumSides = 100
-redCircle.Transparency = 1
+redCircle.Transparency = circleTransparency
 
 RunService.RenderStepped:Connect(function()
 	local vs = Camera.ViewportSize
@@ -199,3 +199,17 @@ phoneBtn.Font = Enum.Font.SourceSans
 phoneBtn.TextSize = 14
 phoneBtn.MouseButton1Click:Connect(toggleMenu)
 
+-- Thêm slider chỉnh độ trong suốt của hình tròn
+local circleTransparency = 1 -- mặc định trong suốt = 1 (rõ nhất)
+
+createSlider("Circle Size", 140, 30, 300, circleRadius, function(v) 
+    circleRadius = v 
+end)
+
+createSlider("Circle Transparency", 180, 0, 1, circleTransparency, function(v) 
+    circleTransparency = v 
+    redCircle.Transparency = v
+end)
+
+createToggle("Wall Check", 220, wallCheckEnabled, function(v) wallCheckEnabled = v end)
+createToggle("Team Check", 255, teamCheckEnabled, function(v) teamCheckEnabled = v end)

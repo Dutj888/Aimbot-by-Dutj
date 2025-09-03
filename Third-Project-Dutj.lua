@@ -75,20 +75,6 @@ local function createSlider(name, yPos, min, max, default, callback)
 	end)
 end
 
--- Ví dụ thêm nút chỉnh trong GUI
-local TransparencySlider = Instance.new("TextBox")
-TransparencySlider.Parent = GUIFrame
-TransparencySlider.Size = UDim2.new(0,100,0,30)
-TransparencySlider.PlaceholderText = "0 - 1"
-TransparencySlider.Text = ""
-
-TransparencySlider.FocusLost:Connect(function()
-    local val = tonumber(TransparencySlider.Text)
-    if val then
-        SetCircleTransparency(val)
-    end
-end)
-
 local aimbotEnabled = true
 local silentAimEnabled = true
 local espEnabled = true
@@ -213,17 +199,3 @@ phoneBtn.Font = Enum.Font.SourceSans
 phoneBtn.TextSize = 14
 phoneBtn.MouseButton1Click:Connect(toggleMenu)
 
--- Giả sử vòng tròn Aimbot đã được khai báo như sau
-local FOVCircle = Drawing.new("Circle")
-FOVCircle.Visible = true
-FOVCircle.Radius = 100
-FOVCircle.Thickness = 2
-FOVCircle.Color = Color3.fromRGB(255,0,0)
-FOVCircle.Filled = false
-FOVCircle.Transparency = 0.5
-
-local function SetCircleTransparency(value)
-    if value < 0 then value = 0 end
-    if value > 1 then value = 1 end
-    FOVCircle.Transparency = value
-end

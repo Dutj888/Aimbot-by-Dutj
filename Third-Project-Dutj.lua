@@ -12,7 +12,7 @@ screenGui.Name = "AimbotMenu"
 screenGui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 200, 0, 260)
+frame.Size = UDim2.new(0, 200, 0, 300)
 frame.Position = UDim2.new(0, 20, 0, 100)
 frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 frame.BorderSizePixel = 0
@@ -79,6 +79,7 @@ local aimbotEnabled = true
 local silentAimEnabled = true
 local espEnabled = true
 local circleRadius = 120
+local circleTransparency = 1 
 local wallCheckEnabled = true
 local teamCheckEnabled = true
 
@@ -86,8 +87,12 @@ createToggle("Aimbot", 35, aimbotEnabled, function(v) aimbotEnabled = v end)
 createToggle("Silent Aim", 70, silentAimEnabled, function(v) silentAimEnabled = v end)
 createToggle("ESP", 105, espEnabled, function(v) espEnabled = v end)
 createSlider("Circle Size", 140, 30, 300, circleRadius, function(v) circleRadius = v end)
-createToggle("Wall Check", 180, wallCheckEnabled, function(v) wallCheckEnabled = v end)
-createToggle("Team Check", 215, teamCheckEnabled, function(v) teamCheckEnabled = v end)
+createSlider("Circle Transparency", 180, 0, 1, circleTransparency, function(v) 
+    circleTransparency = v 
+    redCircle.Transparency = v 
+end)
+createToggle("Wall Check", 220, wallCheckEnabled, function(v) wallCheckEnabled = v end)
+createToggle("Team Check", 255, teamCheckEnabled, function(v) teamCheckEnabled = v end)
 
 local function createESP(player)
 	local text = Drawing.new("Text")
@@ -120,11 +125,11 @@ RunService.RenderStepped:Connect(function()
 	end
 end)
 
-local redCircle = Drawing.new("Circle")
+redCircle = Drawing.new("Circle")
 redCircle.Color = Color3.fromRGB(255, 0, 0)
 redCircle.Thickness = 1.5
 redCircle.NumSides = 100
-redCircle.Transparency = 0.5
+redCircle.Transparency = circleTransparency
 
 RunService.RenderStepped:Connect(function()
 	local vs = Camera.ViewportSize
@@ -178,7 +183,7 @@ RunService.RenderStepped:Connect(function()
 end)
 
 local toggleVisible = true
-local toggleMenu = function()
+local function toggleMenu()
 	toggleVisible = not toggleVisible
 	frame.Visible = toggleVisible
 end
@@ -198,4 +203,3 @@ phoneBtn.TextColor3 = Color3.new(1, 1, 1)
 phoneBtn.Font = Enum.Font.SourceSans
 phoneBtn.TextSize = 14
 phoneBtn.MouseButton1Click:Connect(toggleMenu)
-
